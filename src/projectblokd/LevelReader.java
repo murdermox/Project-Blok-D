@@ -1,75 +1,115 @@
 package projectblokd;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import javax.swing.*;
 
 public class LevelReader extends JPanel {
 
     Speler p;
-
-    private String[][] maze = new String[][]{
-        {"w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"},
-        {"w", "b", "w", "w", "x", "x", "x", "x", "w", "w", "w", "p", "w"},
-        {"w", "x", "w", "w", "x", "w", "w", "x", "x", "x", "w", "x", "w"},
-        {"w", "x", "w", "w", "x", "h", "w", "w", "w", "x", "w", "x", "w"},
-        {"w", "x", "x", "x", "w", "w", "w", "x", "w", "x", "x", "x", "w"},
-        {"w", "x", "w", "x", "x", "x", "x", "x", "x", "x", "w", "x", "w"},
-        {"w", "x", "w", "w", "w", "w", "w", "w", "w", "x", "w", "x", "w"},
-        {"w", "x", "w", "w", "x", "x", "x", "x", "w", "x", "w", "x", "w"},
-        {"w", "x", "w", "w", "x", "w", "w", "x", "w", "x", "w", "x", "w"},
-        {"w", "x", "w", "c", "x", "w", "w", "x", "w", "x", "w", "x", "w"},
-        {"w", "x", "w", "w", "x", "w", "w", "x", "w", "x", "w", "x", "w"},
-        {"w", "x", "x", "x", "x", "x", "w", "x", "w", "x", "x", "x", "w"},
-        {"w", "w", "w", "w", "w", "w", "w", "v", "w", "w", "w", "w", "w"},};
-
-    private Item[][] mazeObjects;
+    private int lengte = 25;
+    private int breedte = 25;
+    private String[][] maze = new String[lengte][breedte];
+    private Scanner in;
+    private int level = 1;
+    private String levelString;
+    private ImageIcon image = new ImageIcon(this.getClass().getResource("endscreen.jpg"));
 
     public LevelReader() {
-        mazeObjects = new Item[13][13];
+        getLevel(level);
+    }
 
-        for (int i = 0; i < 13; i++) {
-            for (int j = 0; j < 13; j++) {
-                if (maze[j][i].equals("w")) {
-                    Muur w = new Muur(j, i);
-                    mazeObjects[j][i] = w;
-                } else if (maze[j][i].equals("x")) {
-                    Pad p = new Pad(j, i);
-                    mazeObjects[j][i] = p;
-                } else if (maze[j][i].equals("h")) {
-                    Helper h = new Helper(j, i);
-                    mazeObjects[j][i] = h;
-                } else if (maze[j][i].equals("b")) {
-                    Bazooka b = new Bazooka(j, i);
-                    mazeObjects[j][i] = b;
-                } else if (maze[j][i].equals("p")) {
-                    p = new Speler(j, i);
-                    mazeObjects[j][i] = p;
-                } else if (maze[j][i].equals("c")) {
-                    Cheater c = new Cheater(j, i);
-                    mazeObjects[j][i] = c;
-                } else if (maze[j][i].equals("v")) {
-                    Vriend v = new Vriend(j, i);
-                    mazeObjects[j][i] = v;
-                }
+    public void readLevel(String levelString) {
+        try {
+            in = new Scanner(new File(levelString));
+            readFile();
+            closeFile();
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+        }
+    }
+
+    public void getLevel(int level) {
+        if (level == 1) {
+            levelString = "src\\resources\\txt\\Level1.txt";
+            readLevel(levelString);
+        } else if (level == 2) {
+            levelString = "src\\resources\\txt\\Level2.txt";
+            readLevel(levelString);
+        } else if (level == 3) {
+            levelString = "src\\resources\\txt\\Level3.txt";
+            readLevel(levelString);
+        } else if (level == 4) {
+            displayEnd();
+        }
+    }
+
+    public void displayEnd() {
+        JFrame end = new JFrame();
+        end.setSize(506, 629);
+        end.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        end.setLocationRelativeTo(null);
+        JLabel label = new JLabel(image);
+        end.add(label);
+        end.setResizable(false);
+        end.setVisible(true);
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+        getLevel(level);
+    }
+
+    public String getItem(int x, int y) {
+        return maze[x][y];
+    }
+
+    public void setPad(int x, int y) {
+        maze[x][y] = "x";
+    }
+    
+    public int getBreedte(){
+        return breedte;
+    }
+    
+    public int getLengte(){
+        return lengte;
+    }
+
+    public void updateMaze(int x, int y, int oldX, int oldY) {
+        maze[oldX][oldY] = "x";
+        maze[x][y] = "p";
+    }
+    
+    public void readFile() {
+        for (int i = 0; i < lengte; i++) {
+            String mapRij = in.next();
+            for (int j = 0; j < breedte; j++) {
+                String item = mapRij.substring(j, j + 1);
+                maze[j][i] = item;
             }
         }
     }
 
-    public Item[][] getMazeObjects() {
-        return mazeObjects;
+    public void closeFile() {
+        in.close();
     }
 
-    public Item getItem(int x, int y) {
-        return mazeObjects[x][y];
+    public String[][] getMaze() {
+        return maze;
     }
 
-    public void updateMaze(int x, int y, int oldX, int oldY) {
-        mazeObjects[x][y] = p;
-        mazeObjects[oldX][oldY] = new Pad(oldX, oldY);
+    public void setHelper(int x, int y) {
+        maze[x][y] = "h";
     }
 
-    public Speler getPlayer() {
-        return p;
+    public void setHelpPad(int x, int y) {
+        maze[x][y] = "z";
+    }
+    
+    public void setSpeler(int x, int y){
+        maze[x][y] = "p";
     }
 }

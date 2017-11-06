@@ -1,18 +1,9 @@
 package projectblokd;
 
-import java.awt.Color;
-
 public class Cheater extends Item {
-
-    public int aantalStappen;
 
     public Cheater(int xco, int yco) {
         super(xco, yco);
-        color = Color.RED;
+        imageString = "src\\resources\\images\\Cheater.png";
     }
-
-    public void zetStappenTerug() {
-
-    }
-
 }
