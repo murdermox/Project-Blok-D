@@ -97,16 +97,17 @@ public class LevelReader extends JPanel {
         in.close();
     }
 
-    public String[][] getMaze() {
-        return maze;
-    }
+//    public String[][] getMaze() {
+//        return maze;
+//    }
 
-    public void setHelper(int x, int y) {
-        maze[x][y] = "h";
-    }
+//    public void setHelper(int x, int y) {
+//        maze[x][y] = "h";
+//    }
 
     public void setHelpPad(int x, int y) {
-        maze[x][y] = "z";
+        if(maze[x][y].equals("x"))
+            maze[x][y] = "z";
     }
     
     public void setSpeler(int x, int y){

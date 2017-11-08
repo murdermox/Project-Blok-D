@@ -309,7 +309,7 @@ public class Level extends JPanel {
         if (isKortstePad[x][y]) {
             lr.setHelpPad(x, y);
         }
-        /*
+        
         switch (richting) {
             case "noord":
                 lr.setSpeler(q, w + 1);
@@ -324,7 +324,7 @@ public class Level extends JPanel {
                 lr.setSpeler(q, w - 1);
                 break;
         }
-                */
+                
     }
 
     public void resetHelper() {
